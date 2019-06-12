@@ -15,40 +15,15 @@ using UnityEngine.SceneManagement;
  *History:     (1):6.11,15:12  (2):6.12,11:25
 *****************************************************************/
 
-public class Game : MonoBehaviour
+public class Game
 {
     //是否暂停
-    bool isPaused;
+    //need to reconstruct
+    public static bool isPaused = false;
 
-    //开始
-    private void Start()
-    {
-        isPaused = false;
-    }
+    //
+    public static GlobalData globalData = new GlobalData();
 
-    //update
-    private void Update()
-    {
-        if(Input.GetKey(KeyCode.Q))
-        {
-            ReStartScene();
-        }
-        if(Input.GetKey(KeyCode.Escape))
-        {
-            PauseGame();
-            if (isPaused)
-            {
-                isPaused = false;
-                ContinueGame();
-            }
-            else
-            {
-                isPaused = true;
-                PauseGame();
-            }
-        }
-
-    }
 
     //存档
     public static void Save()
@@ -64,9 +39,9 @@ public class Game : MonoBehaviour
         }
         NumOfSaves++;
 
-        GlobalData newGlobalData = new GlobalData(0);
+        //GlobalData newGlobalData = new GlobalData();
 
-        string jsonGlobalData = JsonUtility.ToJson(newGlobalData);
+        string jsonGlobalData = JsonUtility.ToJson(globalData);
         Debug.Log("json global data:  " + jsonGlobalData);
 
         StreamWriter streamWriter = new StreamWriter(Application.persistentDataPath + "/save/" + NumOfSaves.ToString() + ".save");
@@ -74,28 +49,26 @@ public class Game : MonoBehaviour
         Debug.Log(Application.persistentDataPath + "/save/" + NumOfSaves.ToString() + ".save");
         streamWriter.Write(jsonGlobalData);
         streamWriter.Close();
-
         
     }
 
     
     //读档
-    public static void Load()
+    public static void Load(int saveId)
     {
+        saveId--;
 
-        if(!File.Exists(Application.persistentDataPath + "game.save"))
+        if(!File.Exists(Application.persistentDataPath + "/save/" + saveId.ToString() + ".save"))
         {
             Debug.Log("no game save exists");
             return;
         }
-        StreamReader streamReader = new StreamReader(Application.persistentDataPath + "game.save");
+        StreamReader streamReader = new StreamReader(Application.persistentDataPath + "/save/" + saveId.ToString() + ".save");
         string jsonGlobalData = streamReader.ReadToEnd();
+        streamReader.Close();
         Debug.Log(jsonGlobalData);
 
-        GlobalData globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
-        Debug.Log(globalData.userId);
-
-
+        globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
     }
 
     //暂停游戏
@@ -115,7 +88,6 @@ public class Game : MonoBehaviour
     {
         Debug.Log("NAME: " + SceneManager.GetActiveScene().name);
         Debug.Log("TO STRING: " + SceneManager.GetActiveScene().ToString());
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().ToString());
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
