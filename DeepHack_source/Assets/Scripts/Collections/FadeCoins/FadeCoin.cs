@@ -29,12 +29,19 @@ public class FadeCoin : MonoBehaviour
     void FixedUpdate()
     {
         distance = FindDistance.distance;//采用这个脚本来获取距离
-        if(distance<=detectDistance&&isFade)
+        DetectDistance();
+
+
+    }
+
+    void DetectDistance()
+    {
+        if (distance <= detectDistance && isFade)
         {
             rend.sharedMaterial = material[1];//变换材质
             isFade = false;
         }
-        if(distance>detectDistance&&!isFade)
+        if (distance > detectDistance && !isFade)
         {
             rend.sharedMaterial = material[0];//变换材质
             isFade = true;
