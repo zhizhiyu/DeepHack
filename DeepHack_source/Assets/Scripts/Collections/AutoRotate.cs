@@ -15,7 +15,12 @@ public class AutoRotate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isX)
+        SelfRotate();
+    }
+
+    void SelfRotate()
+    {
+        if (isX)
         {
             transform.Rotate(Vector3.left * rotationSpeed, Space.World); //物体自转
         }
@@ -28,4 +33,5 @@ public class AutoRotate : MonoBehaviour
             transform.Rotate(Vector3.back * rotationSpeed, Space.World); //物体自转
         }
     }
+
 }

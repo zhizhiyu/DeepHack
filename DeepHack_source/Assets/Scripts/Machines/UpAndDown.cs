@@ -41,17 +41,22 @@ public class UpAndDown : MonoBehaviour
 
     void FixedUpdate()//防止坐电梯的时候穿出去了。。。
     {
-        if(isMoving)//电梯在移动之中
+        UpDownMove();
+    }
+
+    void UpDownMove()
+    {
+        if (isMoving)//电梯在移动之中
         {
-            if(isUp)//根据是否在顶端来进行移动
+            if (isUp)//根据是否在顶端来进行移动
             {
                 tran.Translate(0, -moveForce, 0);
                 tranP.Translate(0, -moveForce, 0);//因为坐电梯的人有rigbody来进行移动，所以要给一个向下的力不然物体就在空中飞起，导致又多开一次电梯
             }
-            if(!isUp)
+            if (!isUp)
             {
                 tran.Translate(0, moveForce, 0);
-               
+
             }
         }
         if (tran.position.y > endPoint)//判断电梯是否该停下了，并且对起各种flag重置
@@ -61,7 +66,7 @@ public class UpAndDown : MonoBehaviour
             isUp = true;
             isMoving = false;
         }
-        if(tran.position.y<startPoint)
+        if (tran.position.y < startPoint)
         {
 
             tran.position = new Vector3(tran.position.x, startPoint, tran.position.z);
