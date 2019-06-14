@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 /*场景跳转脚本
  通过挂载到canvas上并修改button的onclick使用
@@ -27,6 +28,10 @@ public class LevelChange : MonoBehaviour
     public Text timeText;
     public Image levelImg;
 
+
+    public List<SceneConfigData> sceneConfigDatas;//关卡配置信息
+    public List<SceneSaveData>   sceneSaveDatas;//存档中每关数据列表
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +44,24 @@ public class LevelChange : MonoBehaviour
             print(i);
             i.SetActive(false);
         }
+
+
+        sceneConfigDatas = Game.GenerateSceneConfigData();//获取随机关卡信息，之后要修改从数据库中获取
+
+        
+        //Game.Save();//存档
+        
+        //Game.Load(1);//读档
+
+
+        //测试用的生成的数据，之后要修改从数据库中获取
+        for (int i=0; i<3; i++)
+        {
+            Game.globalData.AddNewSceneSaveData(i, 10, i, 0, 0, 20-i, "B");
+        }
+
+
+        sceneSaveDatas = Game.globalData.sceneSaveDatas;//获取存档中每一关的数据
     }
 
     /*场景跳转函数
@@ -93,15 +116,29 @@ public class LevelChange : MonoBehaviour
             levelButton.GetComponent<Transform>().position = Vector3.Lerp(levelButton.GetComponent<Transform>().position, target,0.5f);*/
             levelButton.GetComponent<Transform>().position += new Vector3(xPos, 0f, 0f);
             levelButton.GetComponent<Transform>().rotation = Quaternion.Euler(0, 0, zRota);
-            
-            //显示关卡细节
-            levelDetail.SetActive(true);
-            levelText.text = "stage " + currLevel.ToString();
 
 
             //显示关卡模型
             if (currLevel <= levelModel.Length)
                 levelModel[currLevel - 1].SetActive(true);
+
+            //显示关卡细节
+            levelDetail.SetActive(true);
+            levelText.text = "stage " + currLevel.ToString();//关卡ID
+            nameText.text = sceneConfigDatas[currLevel-1].sceneName;//关卡名字
+            storyText.text = sceneConfigDatas[currLevel - 1].sceneDescription;//关卡故事背景
+            //levelImg = sceneConfigDatas[currLevel - 1].sceneImage;//关卡图片
+
+            Debug.Log("sumOfPieces:        " + (currLevel - 1).ToString());
+            int sumOfPieces = sceneConfigDatas[currLevel - 1].numOfCoins + sceneConfigDatas[currLevel - 1].numOfHidedCoins;//关卡碎片总数
+
+            Debug.Log("sceneSaveDatas:        " + (currLevel - 1).ToString());
+            int collectPieces = sceneSaveDatas[currLevel - 1].numOfCollectedCoins + sceneSaveDatas[currLevel - 1].numOfCollectedHidedCoins;//收集的关卡总数
+            pieceText.text = collectPieces.ToString() + "/" + sumOfPieces.ToString();//显示关卡收集物情况
+            achivementText.text = sceneSaveDatas[currLevel - 1].score;//关卡评级
+            timeText.text = sceneSaveDatas[currLevel - 1].usedTime.ToString();//通关所用时间
+
+            
         }
         
     }
