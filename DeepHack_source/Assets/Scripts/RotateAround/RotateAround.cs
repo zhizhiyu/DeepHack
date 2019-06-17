@@ -15,6 +15,6 @@ public class RotateAround : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         this.transform.RotateAround(Axis.transform.position, Vector3.up, _RotationSpeed);//将需要公转的参照物拖入，设置公转
+         this.transform.RotateAround(Axis.transform.position, Vector3.right, _RotationSpeed);//将需要公转的参照物拖入，设置公转
     }
 }

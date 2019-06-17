@@ -77,7 +77,7 @@ public class LevelChange : MonoBehaviour
     public void EnterLevel()
     {
         print("enterLevel");
-        string levelName = "Level" + currLevel;
+        string levelName = "Level_" + currLevel;
         SceneManager.LoadScene(levelName);
     }
 
