@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine.SceneManagement;
 
+using System.Collections.Generic;
 
 /****************************************************************
  *Copyright(C)  2019 by luojinming All rights reserved. 
@@ -36,17 +37,15 @@ public class Game
         else
         {
             PlayerPrefs.SetInt("NumOfSaves", 1);
+            NumOfSaves++;
         }
-        NumOfSaves++;
-
-        //GlobalData newGlobalData = new GlobalData();
 
         string jsonGlobalData = JsonUtility.ToJson(globalData);
         Debug.Log("json global data:  " + jsonGlobalData);
 
         StreamWriter streamWriter = new StreamWriter(Application.persistentDataPath + "/save/" + NumOfSaves.ToString() + ".save");
-
         Debug.Log(Application.persistentDataPath + "/save/" + NumOfSaves.ToString() + ".save");
+
         streamWriter.Write(jsonGlobalData);
         streamWriter.Close();
         
@@ -56,8 +55,6 @@ public class Game
     //读档
     public static void Load(int saveId)
     {
-        saveId--;
-
         if(!File.Exists(Application.persistentDataPath + "/save/" + saveId.ToString() + ".save"))
         {
             Debug.Log("no game save exists");
@@ -71,9 +68,32 @@ public class Game
         globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
     }
 
+    //
+    public static List<SceneConfigData> GenerateSceneConfigData()
+    {
+        List<SceneConfigData> sceneConfigDatas = new List<SceneConfigData>();
+        for(int i=0; i<3; i++)
+        {
+            SceneConfigData newSceneConfigData = new SceneConfigData(i, "scene" + i.ToString(), "", "some descriptions", 10, 0);
+            sceneConfigDatas.Add(newSceneConfigData);
+        }
+        return sceneConfigDatas;
+    }
+
+    public static void GenerateData()
+    {
+        for(int i=0; i<3; i++)
+        {
+            globalData.AddNewSceneSaveData(i, 10, 0, 10, 0, 20, "B");
+        }
+    }
+
+
+
     //暂停游戏
     public static void PauseGame()
     {
+        
         Time.timeScale = 0;
     }
 
@@ -87,9 +107,14 @@ public class Game
     public static void ReStartScene()
     {
         Debug.Log("NAME: " + SceneManager.GetActiveScene().name);
-        Debug.Log("TO STRING: " + SceneManager.GetActiveScene().ToString());
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    //
+    public static void StartNewScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+        Debug.Log("load new scene: " + sceneName);
+    }
 
 }

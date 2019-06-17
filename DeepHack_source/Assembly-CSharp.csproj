@@ -66,13 +66,21 @@
     <Compile Include="Assets\Scripts\Collections\DestroyThing.cs" />
     <Compile Include="Assets\Scripts\Collections\FadeCoins\FadeCoin.cs" />
     <Compile Include="Assets\Scripts\Collections\FadeCoins\FindDistance.cs" />
+    <Compile Include="Assets\Scripts\Collections\PickUp.cs" />
     <Compile Include="Assets\Scripts\Cursor\CursorType.cs" />
+    <Compile Include="Assets\Scripts\LadderTrigger\LadderTrigger.cs" />
+    <Compile Include="Assets\Scripts\Machines\CollisionFollow.cs" />
+    <Compile Include="Assets\Scripts\Machines\CollisionRotateController.cs" />
     <Compile Include="Assets\Scripts\Machines\UpAndDown.cs" />
     <Compile Include="Assets\Scripts\MessageSystem\keyValue.cs" />
     <Compile Include="Assets\Scripts\MessageSystem\MessageCenter.cs" />
+    <Compile Include="Assets\Scripts\Move\Move.cs" />
+    <Compile Include="Assets\Scripts\RotateAround\RotateAround.cs" />
     <Compile Include="Assets\Scripts\SampleScript.cs" />
     <Compile Include="Assets\Scripts\SaveSystem\Game.cs" />
     <Compile Include="Assets\Scripts\SaveSystem\GlobalData.cs" />
+    <Compile Include="Assets\Scripts\SceneChange\LevelChange.cs" />
+    <Compile Include="Assets\Scripts\SceneChange\RotateSelf.cs" />
     <None Include="Assets\Shaders\SampleShader.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>E:/DeepHack/DeepHack_source/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
