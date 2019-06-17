@@ -11,7 +11,7 @@ using UnityEngine;
  *Date:         6.12
  *Description:  游戏全局数据文件
  *              
- *History:     (1):6.12,16:02
+ *History:     (1):6.12,16:02, (2):6.17,16.41
 *****************************************************************/
 
 [System.Serializable]
@@ -27,6 +27,9 @@ public class GlobalData
     //通关后的存档文件列表
     public List<SceneSaveData> sceneSaveDatas;
 
+    public List<ReportSaveData> reports;
+
+
     //构造函数
     public GlobalData()
     {
@@ -34,6 +37,9 @@ public class GlobalData
         sceneSaveDatas = new List<SceneSaveData>(20);
         passedSceneNums = 0;
         currentSceneId = 0;
+
+        reports = new List<ReportSaveData>();
+        GenerateReportSaveData();
     }
 
     //通关时候新增一个通关存档数据
@@ -68,6 +74,71 @@ public class GlobalData
         sceneSaveDatas[_sceneId].usedTime = _usedTime;
     }
 
+    //根据硬盘中的ReportConfigData文件产生ReportConfigData数据
+    public List<ReportConfigData> ReadReportConfigData()
+    {
+        List<ReportConfigData> reportConfigDatas = new List<ReportConfigData>();
+        
+
+        /*
+         
+        To do
+        硬盘操作
+         
+         
+         */
+         for(int i=0; i<10; i++)
+        {
+            ReportConfigData newReportConfigData = new ReportConfigData(i, i - 1, 10, "reportt", "no descriptions");
+            reportConfigDatas.Add(newReportConfigData);
+        }
+
+
+        return reportConfigDatas;
+    }
+
+    //生成数据
+    void GenerateReportSaveData()
+    {
+        List<ReportConfigData> reportConfigDatas = ReadReportConfigData();
+        foreach(ReportConfigData re in reportConfigDatas)
+        {
+            ReportSaveData newReportSaveData = new ReportSaveData(re.index, re.parentIndex, false, false);
+            reports.Add(newReportSaveData);
+        }
+    }
+
+
+    //更新报告解锁数据
+    public void UpdateReportDataUnLocked(int index)
+    {
+        for(int i=0; i<reports.Count; i++)
+        {
+            if(reports[i].index == index)
+            {
+                Debug.Log("find the report");
+                if(reports[i].unlocked == true)
+                {
+                    Debug.LogError("already unlocked!");
+                    return;
+                }
+                reports[i].unlocked = true;
+            }
+        }
+        
+    }
+
+    //更新报告是否打开数据
+    public void UpdateReportDataIsOpen(int index, bool isOpen)
+    {
+        foreach(ReportSaveData re in reports)
+        {
+            if(re.index == index)
+            {
+                re.isOpen = isOpen;
+            }
+        }
+    }
 
 }
 
@@ -142,3 +213,64 @@ public class SceneSaveData
         score = _score;
     }
 }
+
+
+
+//具体报告
+[System.Serializable]
+public class ReportSaveData
+{
+    //标号
+    public int index;
+
+    //父报告的标号
+    public int parentIndex;
+
+    //是否解锁
+    public bool unlocked;
+
+    //是否打开
+    public bool isOpen;
+
+    public ReportSaveData(int _index, int _parentIndex, bool _unlocked, bool _isOpen)
+    {
+        index = _index;
+        parentIndex = _parentIndex;
+        unlocked = _unlocked;
+        isOpen = _isOpen;
+    }
+
+}
+
+
+//具体报告
+[System.Serializable]
+public class ReportConfigData
+{
+    //标号
+    public int index;
+
+    //父报告的标号
+    public int parentIndex;
+
+    //解锁需要的
+    public int cost;
+
+    //标题
+    public string name;
+
+    //描述
+    public string description;
+
+
+    public ReportConfigData(int _index, int _parendIndex, int _cost, string _name, string _description)
+    {
+        index = _index;
+        parentIndex = _parendIndex;
+        cost = _cost;
+        name = _name;
+        description = _description;
+    }
+}
+
+
