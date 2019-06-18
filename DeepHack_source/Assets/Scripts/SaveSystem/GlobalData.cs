@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 
 /****************************************************************
@@ -39,6 +40,7 @@ public class GlobalData
         currentSceneId = 0;
 
         reports = new List<ReportSaveData>();
+        GenerateReportConfigDataFile();
         GenerateReportSaveData();
     }
 
@@ -74,26 +76,59 @@ public class GlobalData
         sceneSaveDatas[_sceneId].usedTime = _usedTime;
     }
 
-    //根据硬盘中的ReportConfigData文件产生ReportConfigData数据
+    //产生ReportConfigData txt文件，但是需要手动修改这些文件的内容
+    public void GenerateReportConfigDataFile()
+    {
+        int configDataNum = 10;
+        StreamWriter streamWriter;
+
+        if (!Directory.Exists(Application.persistentDataPath + "/ReportConfigData/"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/ReportConfigData/");
+        }
+        else
+        {
+            Debug.Log("ReportConfigDataFile already exists!");
+            return;
+        }
+
+        for (int i = 0; i < configDataNum; i++)
+        {
+            ReportConfigData newReportConfigData = new ReportConfigData(i, 0, 10, "no name", "no description");
+            string jsonNewReportConfigData = JsonUtility.ToJson(newReportConfigData);
+
+            streamWriter = new StreamWriter(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt");
+            streamWriter.Write(jsonNewReportConfigData);
+            streamWriter.Close();
+        }
+    }
+
+    //读取ReportConfigData txt文件，返回ReportConfigData列表数据
     public List<ReportConfigData> ReadReportConfigData()
     {
         List<ReportConfigData> reportConfigDatas = new List<ReportConfigData>();
-        
 
-        /*
-         
-        To do
-        硬盘操作
-         
-         
-         */
-         for(int i=0; i<10; i++)
+        int configDataNum = 10;
+
+        StreamReader streamReader;
+        for (int i = 0; i < configDataNum; i++)
         {
-            ReportConfigData newReportConfigData = new ReportConfigData(i, i - 1, 10, "reportt", "no descriptions");
+            if (!File.Exists(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt"))
+            {
+                Debug.Log("no report config data exists!");
+            }
+            streamReader = new StreamReader(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt");
+
+            string StringNewReportConfigData = streamReader.ReadToEnd();
+            streamReader.Close();
+
+            Debug.Log(StringNewReportConfigData);
+
+            ReportConfigData newReportConfigData = JsonUtility.FromJson<ReportConfigData>(StringNewReportConfigData);
+
             reportConfigDatas.Add(newReportConfigData);
+
         }
-
-
         return reportConfigDatas;
     }
 
