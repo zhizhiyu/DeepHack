@@ -22,7 +22,7 @@ public class Game
     //need to reconstruct
     public static bool isPaused = false;
 
-    //
+    //存档数据
     public static GlobalData globalData = new GlobalData();
 
 
@@ -39,6 +39,12 @@ public class Game
             PlayerPrefs.SetInt("NumOfSaves", 1);
             NumOfSaves++;
         }
+
+        /*
+         目前存档只有一个
+         */
+
+        NumOfSaves = 1;
 
         string jsonGlobalData = JsonUtility.ToJson(globalData);
         Debug.Log("json global data:  " + jsonGlobalData);
@@ -68,7 +74,34 @@ public class Game
         globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
     }
 
-    //
+    //读档,存档只有一个
+    public static void Load()
+    {
+        int saveId = 1;
+        if (!File.Exists(Application.persistentDataPath + "/save/" + saveId.ToString() + ".save"))
+        {
+            Debug.Log("no game save exists");
+            return;
+        }
+        StreamReader streamReader = new StreamReader(Application.persistentDataPath + "/save/" + saveId.ToString() + ".save");
+        string jsonGlobalData = streamReader.ReadToEnd();
+        streamReader.Close();
+        Debug.Log(jsonGlobalData);
+
+        globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
+    }
+
+    //初始化数据,测试用
+    public static void NewGame()
+    {
+        globalData = new GlobalData();
+        GenerateData();
+        Save();
+    }
+
+    
+
+    //产生测试数据
     public static List<SceneConfigData> GenerateSceneConfigData()
     {
         List<SceneConfigData> sceneConfigDatas = new List<SceneConfigData>();
@@ -80,6 +113,7 @@ public class Game
         return sceneConfigDatas;
     }
 
+    //产生测试数据
     public static void GenerateData()
     {
         for(int i=0; i<3; i++)

@@ -24,37 +24,108 @@ public class GlobalData
     //现在的关卡ID
     public int currentSceneId;
 
+    //收集数量
+    public int coin;
+
+
+    //完成度
+    public float completion;
+
 
     //通关后的存档文件列表
     public List<SceneSaveData> sceneSaveDatas;
 
     public List<ReportSaveData> reports;
 
+    public List<ReportConfigData> reportConfigDatas;
+
 
     //构造函数
     public GlobalData()
     {
         Debug.Log("new global data");
-        sceneSaveDatas = new List<SceneSaveData>(20);
+
+        GenerateSceneConfigDataFile();
+        sceneSaveDatas = new List<SceneSaveData>();
+
+        coin = 0;
+        completion = 0;
+
         passedSceneNums = 0;
         currentSceneId = 0;
 
         reports = new List<ReportSaveData>();
         GenerateReportConfigDataFile();
+        reportConfigDatas = ReadReportConfigData();
         GenerateReportSaveData();
     }
+
+
+    //生成关卡配置文件
+    public void GenerateSceneConfigDataFile()
+    {
+        int sceneNum = 10;
+        StreamWriter streamWriter;
+        if (Directory.Exists(Application.persistentDataPath + "/sceneConfigData/"))
+        {
+            Debug.Log("the directory already exists");
+            return;
+        }
+        Directory.CreateDirectory(Application.persistentDataPath + "/sceneConfigData/");
+        for(int i=0; i<sceneNum; i++)
+        {
+            SceneConfigData newSceneConfigData = new SceneConfigData(i, "name", "imagePath", "no description", 10, 10);
+            streamWriter = new StreamWriter(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt");
+            string jsonData = JsonUtility.ToJson(newSceneConfigData);
+            streamWriter.Write(jsonData);
+            streamWriter.Close();
+        }
+    }
+
+    //返回关卡配置文件
+    public List<SceneConfigData> ReadSceneConfigDataFile()
+    {
+        int sceneNum = 10;
+        List<SceneConfigData> sceneConfigDatas = new List<SceneConfigData>();
+
+        StreamReader streamReader;
+        for(int i=0; i<sceneNum; i++)
+        {
+            if(!File.Exists(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt"))
+            {
+                Debug.Log("file not exists!");
+                break;
+            }
+            streamReader = new StreamReader(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt");
+            string jsonData = streamReader.ReadToEnd();
+            streamReader.Close();
+
+            SceneConfigData newSceneConfigData = JsonUtility.FromJson<SceneConfigData>(jsonData);
+            sceneConfigDatas.Add(newSceneConfigData);
+        }
+
+        return sceneConfigDatas;
+    }
+
+
 
     //通关时候新增一个通关存档数据
     public void AddNewSceneSaveData(int _sceneId, int _numOfCoins, int _numOfCollectedCoins, 
         int _numOfHidedCoins, int _numOfCollectedHidedCoins, float _usedTime, string _score)
     {
-        if(_sceneId > passedSceneNums)
+
+        ///////////////注意这里有点问题
+        if(_sceneId == passedSceneNums)
         {
-            Debug.LogError("该关卡数比已通关数还大");
+            SceneSaveData newSceneSaveData = new SceneSaveData(_sceneId, _numOfCoins, _numOfCollectedCoins,
+_numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
+            sceneSaveDatas.Add(newSceneSaveData);
         }
-        SceneSaveData newSceneSaveData = new SceneSaveData(_sceneId, _numOfCoins, _numOfCollectedCoins,
-        _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
-        sceneSaveDatas.Add(newSceneSaveData);
+        else
+        {
+            Debug.Log("增加通关记录失败");
+        }
+
     }
 
     //获取某个关卡的通关数据
@@ -116,6 +187,7 @@ public class GlobalData
             if (!File.Exists(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt"))
             {
                 Debug.Log("no report config data exists!");
+                break;
             }
             streamReader = new StreamReader(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt");
 
@@ -135,6 +207,11 @@ public class GlobalData
     //生成数据
     void GenerateReportSaveData()
     {
+        //if(reports != null)
+        //{
+        //    Debug.Log("report save data already exists");
+        //    return;
+        //}
         List<ReportConfigData> reportConfigDatas = ReadReportConfigData();
         foreach(ReportConfigData re in reportConfigDatas)
         {
@@ -266,6 +343,7 @@ public class ReportSaveData
 
     //是否打开
     public bool isOpen;
+
 
     public ReportSaveData(int _index, int _parentIndex, bool _unlocked, bool _isOpen)
     {
