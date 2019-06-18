@@ -122,7 +122,7 @@ public class GlobalData
             string StringNewReportConfigData = streamReader.ReadToEnd();
             streamReader.Close();
 
-            Debug.Log(StringNewReportConfigData);
+            //Debug.Log(StringNewReportConfigData);
 
             ReportConfigData newReportConfigData = JsonUtility.FromJson<ReportConfigData>(StringNewReportConfigData);
 
