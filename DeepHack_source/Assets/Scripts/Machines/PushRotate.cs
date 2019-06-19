@@ -6,45 +6,34 @@ public class PushRotate : MonoBehaviour
 {
     public GameObject controledItem;
     public float rotationSpeed = 2f;
-    public float betweenDistance;
+    //public float betweenDistance;
+    public bool isX = false;
+    public bool isY = true;
+    public bool isZ = false;
+    //public float rotateAngle = 0;
+    //private float rotateOneTime = 30f;
 
-    private float rotateAngle = 0;
+    public SameRotate same;
+
     [SerializeField]
     private bool isPush = false;
-
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    [SerializeField]
+    private bool isOn = false;
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //if (!Input.GetKey(KeyCode.E)&& isPush   )
-        //{
-        //    isPush = false;
-        //}
-        Push();
-        
+        if(isPush)
+            Push();
+        if(!isPush&&isOn)
+        {
+            AngleCheck();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Player")
-
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                isPush = true;
-            }
-            if (Input.GetKeyUp(KeyCode.F))
-            {
-                isPush = false;
-            }
-        }
+        isOn = true;
     }
 
     private void OnTriggerStay(Collider other)
@@ -53,13 +42,14 @@ public class PushRotate : MonoBehaviour
         if (other.gameObject.name == "Player")
 
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKey(KeyCode.F))
             {
                 isPush = true;
             }
-            if (Input.GetKeyUp(KeyCode.F))
+            if (!Input.GetKey(KeyCode.F))
             {
                 isPush = false;
+                AngleCheck();
             }
         }
     }
@@ -69,21 +59,40 @@ public class PushRotate : MonoBehaviour
     {
         if (collision.gameObject.name == "Player")
             isPush = false;
+        AngleCheck();
+        isOn = false;
     }
 
     void Push()
     {
-        if (isPush)
-        {
+
            if(Input.GetKey(KeyCode.Q))
             {
-                transform.Rotate(Vector3.down * rotationSpeed, Space.World);
+                if(isX)
+                {
+                    controledItem.transform.Rotate(new Vector3(rotationSpeed, 0, 0));
+                    transform.Rotate(new Vector3(0, rotationSpeed, 0));
+                    same.rotateAngle += rotationSpeed;
+
+                }
+
             }
             if (Input.GetKey(KeyCode.E))
             {
-                transform.Rotate(Vector3.up * rotationSpeed, Space.World);
+                
+                if (isX)
+                {
+                    
+                    controledItem.transform.Rotate(new Vector3(-rotationSpeed, 0, 0));
+                    transform.Rotate(new Vector3(0, -rotationSpeed, 0));
+                    same.rotateAngle += rotationSpeed;
+                }
             }
-            controledItem.transform.rotation = transform.rotation;
-        }
+    }
+
+    void AngleCheck()
+    {
+        int x = (int)(same.rotateAngle / 90);
+        controledItem.transform.rotation = Quaternion.Euler(new Vector3(90 * x, 0, 0));
     }
 }
