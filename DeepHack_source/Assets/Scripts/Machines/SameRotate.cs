@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SameRotate : MonoBehaviour
 {
+    //同步旋转
+
     [SerializeField]
     public float rotateAngle;
     // Start is called before the first frame update

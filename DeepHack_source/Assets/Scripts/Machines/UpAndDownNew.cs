@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class UpAndDownNew : MonoBehaviour
 {
+    //用开关控制上升下降
+
     [Tooltip("电梯本体拖到这里")]
-    public Transform tran;//电梯的变换信息
+    public Transform tran;//上升下降的变换信息
 
     public float upDistance = 1.0f;//上升的高度
     public float downDistance = 1.0f;//下降的高度

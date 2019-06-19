@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//此代码用于机关控制物体上升下降，电梯效果，把此代码挂接到开关上
+//此代码用于电梯控制物体上升下降，电梯效果，把此代码挂接到开关上，人在上升下降机关之中
 
 public class UpAndDown : MonoBehaviour
 {

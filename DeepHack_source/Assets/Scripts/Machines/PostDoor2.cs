@@ -5,7 +5,8 @@ using UnityEngine;
 public class PostDoor2 : MonoBehaviour
 {
     public Transform otherDoor;
-    public Transform point;
+    public Transform point;//传送的点
+
     public PostDoor2 otherSrpt;
     public bool isPost = false;
 

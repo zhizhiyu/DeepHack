@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PostDoor : MonoBehaviour
 {
-    public Transform otherDoor;
-    public PostDoor otherSrpt;
+    //传送门 放在地上的
+    public Transform otherDoor;//另一个门
+    public PostDoor otherSrpt;//另一个门
 
 
     public bool isPost = false;

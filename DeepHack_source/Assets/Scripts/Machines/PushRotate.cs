@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PushRotate : MonoBehaviour
 {
+
+    //这个版本不太OK
     public GameObject controledItem;
     public float rotationSpeed = 2f;
     //public float betweenDistance;
