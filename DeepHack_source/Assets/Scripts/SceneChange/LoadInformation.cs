@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class LoadInformation : MonoBehaviour
 {
     public int index;
+    //public int level;//当前文档所在阶段
+    public GameObject levelButton;//当前文档关联的阶段报告按钮
     public bool isUnlocked = false;//是否已解锁
     public bool isOpen = false;//是否已开启
     public Sprite unlockedInformation;//解锁替换按钮图
@@ -30,7 +32,9 @@ public class LoadInformation : MonoBehaviour
 
     void Start()
     {
-        
+        //读取情报碎片总量
+        sumPieces.text = Game.globalData.coin.ToString();
+
         //判断父节点是否为信息开启按钮
         if(this.transform.parent.GetComponent<LoadInformation>()==null)
         { 
@@ -75,42 +79,51 @@ public class LoadInformation : MonoBehaviour
 
         isUnlocked = Game.globalData.reports[index].unlocked;
         //解锁节点
-        if (isUnlocked)
+        if (isUnlocked && !isOpen)
         {
             print("Unlock");
             img.overrideSprite = unlockedInformation;//替换图片为已解锁背景
             SetActive(cost.gameObject, true);//显示开启消耗碎片量
         }
 
-        isOpen = Game.globalData.reports[index].isOpen;
+        /*isOpen = Game.globalData.reports[index].isOpen;
         //开启节点
         if (isOpen)
         {
             img.overrideSprite = openInformation;//替换图片为已开启背景
             SetActive(cost.gameObject, false);
-        }
+        }*/
     }
 
 
     public void OpenInformation()
     {
+        //如果没解锁
+        if (!isUnlocked)
+            return;
+
         int sumOfPieces = int.Parse(sumPieces.text.ToString());//碎片总量
         int costOfPieces = int.Parse(cost.text.ToString());//打开该信息所需的碎片消耗量
         if (!isOpen && costOfPieces <= sumOfPieces)
         {
             //修改为打开状态
             sumOfPieces -= costOfPieces;
+            sumPieces.text = sumOfPieces.ToString();//修改显示的碎片总量
+            Game.globalData.coin = sumOfPieces;//修改碎片总量存档
             isOpen = true;
             Game.globalData.reports[index].isOpen = isOpen;
-            print("Opening");
+            //print("Opening");
             img.overrideSprite = openInformation;//替换图片为已开启背景
+            //print("change");
             SetActive(cost.gameObject, false);
+
+            //开启后，阶段总结报告中当前阶段已打开数量增加
+            levelButton.GetComponent<InformationStage>().addCount();
         }
 
         if (isOpen)
-        {
+        { 
             //显示信息面板
-            sumPieces.text = sumOfPieces.ToString();
             SetActive(informationPanel, true);
             //读取故事文档
             List<ReportConfigData> reportConfigDatas = Game.globalData.ReadReportConfigData();//读取文档列表

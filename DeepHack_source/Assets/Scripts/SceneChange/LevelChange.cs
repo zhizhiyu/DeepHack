@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using System.IO;
 
 /*场景跳转脚本
  通过挂载到canvas上并修改button的onclick使用
@@ -26,7 +26,7 @@ public class LevelChange : MonoBehaviour
     public Text pieceText;
     public Text achivementText;
     public Text timeText;
-    public Image levelImg;
+    public GameObject levelImg;
 
 
     public List<SceneConfigData> sceneConfigDatas;//关卡配置信息
@@ -36,17 +36,19 @@ public class LevelChange : MonoBehaviour
     void Start()
     {
         currLevel = 0;
-        levelDetail.SetActive(false);
+        //levelDetail.SetActive(false);
+        SetActive(levelDetail, false);
         //获得所有关卡模型并隐藏
         levelModel = GameObject.FindGameObjectsWithTag("LevelModel").OrderBy(g => g.transform.GetSiblingIndex()).ToArray();
         foreach(var i in levelModel)
         {
             print(i);
-            i.SetActive(false);
+            //i.SetActive(false);
+            SetActive(i, false);
         }
 
 
-        sceneConfigDatas = Game.GenerateSceneConfigData();//获取随机关卡信息，之后要修改从数据库中获取
+        sceneConfigDatas = Game.globalData.ReadSceneConfigDataFile();//获取随机关卡信息，之后要修改从数据库中获取
 
         
         //Game.Save();//存档
@@ -62,6 +64,14 @@ public class LevelChange : MonoBehaviour
 
 
         sceneSaveDatas = Game.globalData.sceneSaveDatas;//获取存档中每一关的数据
+
+
+        foreach (SceneConfigData data in sceneConfigDatas)
+        {
+            Debug.Log("name: " + data.sceneName);
+            Debug.Log("image :" + data.sceneImage);
+        }
+
     }
 
     /*场景跳转函数
@@ -77,7 +87,7 @@ public class LevelChange : MonoBehaviour
     public void EnterLevel()
     {
         print("enterLevel");
-        string levelName = "Level_" + currLevel;
+        string levelName = "Level" + currLevel;
         SceneManager.LoadScene(levelName);
     }
 
@@ -97,10 +107,12 @@ public class LevelChange : MonoBehaviour
                 lastButton.GetComponent<Transform>().position -= new Vector3(xPos, 0f, 0f);
                 lastButton.GetComponent<Transform>().rotation = Quaternion.Euler(0f, 0f, 0f);
                 //上一关的关卡细节设为不显示
-                levelDetail.SetActive(false);
+                //levelDetail.SetActive(false);
+                SetActive(levelDetail, false);
                 //获得上一关模型并设置为不显示
-                if(currLevel<=levelModel.Length)
-                    levelModel[currLevel - 1].SetActive(false);
+                if (currLevel <= levelModel.Length)
+                    //levelModel[currLevel - 1].SetActive(false);
+                    SetActive(levelModel[currLevel - 1], false);
             }
 
             /*调整当前选中的关卡按钮*/
@@ -120,14 +132,24 @@ public class LevelChange : MonoBehaviour
 
             //显示关卡模型
             if (currLevel <= levelModel.Length)
-                levelModel[currLevel - 1].SetActive(true);
+                //levelModel[currLevel - 1].SetActive(true);
+                SetActive(levelModel[currLevel - 1], true);
 
             //显示关卡细节
-            levelDetail.SetActive(true);
+            //levelDetail.SetActive(true);
+            SetActive(levelDetail, true);
             levelText.text = "stage " + currLevel.ToString();//关卡ID
             nameText.text = sceneConfigDatas[currLevel-1].sceneName;//关卡名字
             storyText.text = sceneConfigDatas[currLevel - 1].sceneDescription;//关卡故事背景
             //levelImg = sceneConfigDatas[currLevel - 1].sceneImage;//关卡图片
+            //读取图片
+            //print("reading"+ currLevel+" img from "+ sceneConfigDatas[currLevel - 1].sceneImage);
+
+            print(sceneConfigDatas[currLevel - 1].sceneImage);
+            string path = "E:\\raincollapse\\unity\\UI\\游戏美术\\游戏美术\\关卡选择页面\\其他元素\\";
+            Texture2D texture2d = new Texture2D(1, 1);
+            texture2d.LoadImage(ReadPNG(path+sceneConfigDatas[currLevel - 1].sceneImage));
+            levelImg.GetComponent<Image>().overrideSprite = Sprite.Create(texture2d, new Rect(0, 0, texture2d.width, texture2d.height), new Vector2(0, 0));
 
             Debug.Log("sumOfPieces:        " + (currLevel - 1).ToString());
             int sumOfPieces = sceneConfigDatas[currLevel - 1].numOfCoins + sceneConfigDatas[currLevel - 1].numOfHidedCoins;//关卡碎片总数
@@ -142,5 +164,50 @@ public class LevelChange : MonoBehaviour
         }
         
     }
+
+    static public void SetActive(GameObject go, bool state)
+    {
+        if (go == null)
+        {
+            return;
+        }
+
+        if (go.activeSelf != state)
+        {
+            go.SetActive(state);
+        }
+    }
+
+    /*
+    public void UpdateInfomation(string infomation)
+    {
+        Texture2D texture2d = new Texture2D(1, 1);
+        texture2d.LoadImage(ReadPNG(infomation));
+        gameObject.GetComponent<Image>().sprite = Sprite.Create(texture2d, new Rect(0, 0, texture2d.width, texture2d.height), new Vector2(0, 0));
+    }*/
+    /// <summary>  
+    /// 根据图片路径返回图片的字节流byte[]  
+    /// </summary>  
+    /// <param name="imagePath"></param>  
+    /// <returns>返回的字节流</returns>  
+    public static byte[] ReadPNG(string path)
+    {
+        print("reading img from" + path);
+        FileStream fileStream = new FileStream(path, FileMode.Open, System.IO.FileAccess.Read);
+
+        fileStream.Seek(0, SeekOrigin.Begin);
+
+        byte[] binary = new byte[fileStream.Length]; //创建文件长度的buffer   
+        fileStream.Read(binary, 0, (int)fileStream.Length);
+
+        fileStream.Close();
+
+        fileStream.Dispose();
+
+        fileStream = null;
+
+        return binary;
+    }
+
 
 }
