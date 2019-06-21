@@ -38,9 +38,9 @@ public class SwitchInformation : MonoBehaviour
 
         //读取下一个索引的文档
         //读取下一索引的记录，判断是否已开启
-        while (++index < Game.globalData.reports.Count && !Game.globalData.reports[index].isOpen) { } //循环直到下一条记录已打开，或已是最后一条记录
+        while (++index < 13 && !Game.globalData.reports[index].isOpen) { } //循环直到下一条记录已打开，或已是最后一条记录
 
-        if (index < Game.globalData.reports.Count) //已打开的下一条记录索引小于等于最后一条
+        if (index < 13) //已打开的下一条记录索引小于等于最后一条
         {
             //显示当前索引
             indexText.text = (index + 1).ToString();

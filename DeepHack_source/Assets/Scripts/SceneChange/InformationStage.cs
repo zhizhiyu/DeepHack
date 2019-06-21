@@ -20,6 +20,7 @@ public class InformationStage : MonoBehaviour
     //public Text titleText;//文档标题
     public Text informationText;//记录文档文本
     public Text indexText;
+    public GameObject switchImg;//不需显示的上下页按钮
 
     void Awake()
     {
@@ -62,6 +63,8 @@ public class InformationStage : MonoBehaviour
             return;
         //显示信息面板
         SetActive(informationPanel, true);
+        //不显示上下页按钮
+        SetActive(switchImg, false);
         //读取故事文档
         List<ReportConfigData> reportConfigDatas = Game.globalData.ReadReportConfigData();//读取文档列表
         string recordTitle = reportConfigDatas[index].name;//显示文档标题
@@ -71,6 +74,15 @@ public class InformationStage : MonoBehaviour
         //显示索引
         indexText.text = (index + 1).ToString();
     }
+
+    public void CloseInformation()
+    {
+        //把关闭的上下页按钮激活
+        SetActive(switchImg, true);
+        SetActive(informationPanel, false);
+        
+    }
+
 
     static public void SetActive(GameObject go, bool state)
     {

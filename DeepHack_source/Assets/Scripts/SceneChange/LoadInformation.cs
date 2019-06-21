@@ -40,6 +40,7 @@ public class LoadInformation : MonoBehaviour
         { 
             print(transform.parent.ToString()+"Unlocking");
             isUnlocked = true;
+            Game.globalData.reports[index].unlocked = isUnlocked;
         }
 
         isUnlocked = Game.globalData.reports[index].unlocked;
@@ -118,11 +119,13 @@ public class LoadInformation : MonoBehaviour
             SetActive(cost.gameObject, false);
 
             //开启后，阶段总结报告中当前阶段已打开数量增加
-            levelButton.GetComponent<InformationStage>().addCount();
+            if(levelButton!=null)
+               levelButton.GetComponent<InformationStage>().addCount();
         }
 
         if (isOpen)
-        { 
+        {
+            print("opening");
             //显示信息面板
             SetActive(informationPanel, true);
             //读取故事文档
@@ -137,10 +140,11 @@ public class LoadInformation : MonoBehaviour
 
     }
 
-    public void CloseInformation()
+    /*public void CloseInformation()
     {
         SetActive(informationPanel, false);
-    }
+        
+    }*/
 
     static public void SetActive(GameObject go, bool state)
     {
