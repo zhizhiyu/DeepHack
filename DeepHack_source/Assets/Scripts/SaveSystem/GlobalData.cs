@@ -35,8 +35,10 @@ public class GlobalData
     //通关后的存档文件列表
     public List<SceneSaveData> sceneSaveDatas;
 
+    //
     public List<ReportSaveData> reports;
 
+    //
     public List<ReportConfigData> reportConfigDatas;
 
 
@@ -45,14 +47,14 @@ public class GlobalData
     {
         Debug.Log("new global data");
 
-        GenerateSceneConfigDataFile();
-        sceneSaveDatas = new List<SceneSaveData>();
-
-        coin = 0;
+        coin = 47;
         completion = 0;
 
         passedSceneNums = 0;
         currentSceneId = 0;
+
+        GenerateSceneConfigDataFile();
+        sceneSaveDatas = new List<SceneSaveData>();
 
         reports = new List<ReportSaveData>();
         GenerateReportConfigDataFile();
@@ -64,7 +66,7 @@ public class GlobalData
     //生成关卡配置文件
     public void GenerateSceneConfigDataFile()
     {
-        int sceneNum = 10;
+        int sceneNum = 3;
         StreamWriter streamWriter;
         if (Directory.Exists(Application.persistentDataPath + "/sceneConfigData/"))
         {
@@ -85,7 +87,7 @@ public class GlobalData
     //返回关卡配置文件
     public List<SceneConfigData> ReadSceneConfigDataFile()
     {
-        int sceneNum = 10;
+        int sceneNum = 3;
         List<SceneConfigData> sceneConfigDatas = new List<SceneConfigData>();
 
         StreamReader streamReader;
@@ -99,6 +101,7 @@ public class GlobalData
             streamReader = new StreamReader(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt");
             string jsonData = streamReader.ReadToEnd();
             streamReader.Close();
+            Debug.Log(jsonData);
 
             SceneConfigData newSceneConfigData = JsonUtility.FromJson<SceneConfigData>(jsonData);
             sceneConfigDatas.Add(newSceneConfigData);
@@ -128,6 +131,18 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
 
     }
 
+    public void AddNewSceneSaveData(SceneSaveData _sceneSaveData)
+    {
+        if(_sceneSaveData.sceneId == passedSceneNums)
+        {
+            sceneSaveDatas.Add(_sceneSaveData);
+        }
+        else
+        {
+            Debug.Log("增加通关记录失败");
+        }
+    }
+
     //获取某个关卡的通关数据
     public SceneSaveData GetSceneSaveDataBySceneId(int _sceneId)
     {
@@ -139,6 +154,11 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
     public void UpdateSceneSaveData(int _sceneId, int _numOfCoins, int _numOfCollectedCoins,
         int _numOfHidedCoins, int _numOfCollectedHidedCoins, float _usedTime)
     {
+        if(_sceneId > passedSceneNums)
+        {
+            Debug.Log("修改通关记录失败");
+            return;
+        }
         sceneSaveDatas[_sceneId].sceneId = _sceneId;
         sceneSaveDatas[_sceneId].numOfCoins = _numOfCoins;
         sceneSaveDatas[_sceneId].numOfCollectedCoins = _numOfCollectedCoins;
@@ -150,7 +170,7 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
     //产生ReportConfigData txt文件，但是需要手动修改这些文件的内容
     public void GenerateReportConfigDataFile()
     {
-        int configDataNum = 10;
+        int configDataNum = 15;
         StreamWriter streamWriter;
 
         if (!Directory.Exists(Application.persistentDataPath + "/ReportConfigData/"))
@@ -179,7 +199,7 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
     {
         List<ReportConfigData> reportConfigDatas = new List<ReportConfigData>();
 
-        int configDataNum = 10;
+        int configDataNum = 15;
 
         StreamReader streamReader;
         for (int i = 0; i < configDataNum; i++)
@@ -265,7 +285,7 @@ public class SceneConfigData
     //关卡名字
     public string sceneName;
 
-    //
+    //图片名字
     public string sceneImage;
 
     //关卡描述

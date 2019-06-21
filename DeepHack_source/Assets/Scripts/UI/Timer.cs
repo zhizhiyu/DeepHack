@@ -21,6 +21,6 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        timeText.text = Time.time.ToString();
+        timeText.text = Time.timeSinceLevelLoad.ToString();
     }
 }

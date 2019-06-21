@@ -57,10 +57,10 @@ public class LevelChange : MonoBehaviour
 
 
         //测试用的生成的数据，之后要修改从数据库中获取
-        for (int i=0; i<3; i++)
-        {
-            Game.globalData.AddNewSceneSaveData(i, 10, i, 0, 0, 20-i, "B");
-        }
+        //for (int i=0; i<3; i++)
+        //{
+        //    Game.globalData.AddNewSceneSaveData(i, 10, i, 0, 0, 20-i, "B");
+        //}
 
 
         sceneSaveDatas = Game.globalData.sceneSaveDatas;//获取存档中每一关的数据
@@ -84,17 +84,31 @@ public class LevelChange : MonoBehaviour
         SceneManager.LoadScene(nextLevel);
     }
 
+    public void LoadNewGame(string nextLevel)
+    {
+        print("nextLevel");
+        Game.NewGame();
+        SceneManager.LoadScene(nextLevel);
+    }
+
+    public void LoadGame(string nextLevel)
+    {
+        print("load game");
+        Game.Load();
+        SceneManager.LoadScene(nextLevel);
+    }
+
     public void EnterLevel()
     {
         print("enterLevel");
-        string levelName = "Level" + currLevel;
+        string levelName = "Level_" + currLevel.ToString();
         SceneManager.LoadScene(levelName);
     }
 
     public void SelectLevel(int levelNum)
     {
         /*先进行判断是否已选中该关卡按钮*/
-        if (currLevel != levelNum)
+        if (currLevel != levelNum && levelNum - 1 <= Game.globalData.passedSceneNums)
         {
             /*先还原上一个关卡按钮*/
             if (currLevel > 0)
@@ -146,7 +160,7 @@ public class LevelChange : MonoBehaviour
             //print("reading"+ currLevel+" img from "+ sceneConfigDatas[currLevel - 1].sceneImage);
 
             print(sceneConfigDatas[currLevel - 1].sceneImage);
-            string path = "E:\\raincollapse\\unity\\UI\\游戏美术\\游戏美术\\关卡选择页面\\其他元素\\";
+            string path = "E:\\unity\\project\\DeepHack_source\\DeepHack_source\\Assets\\UI\\关卡选择页面\\其他元素\\";
             Texture2D texture2d = new Texture2D(1, 1);
             texture2d.LoadImage(ReadPNG(path+sceneConfigDatas[currLevel - 1].sceneImage));
             levelImg.GetComponent<Image>().overrideSprite = Sprite.Create(texture2d, new Rect(0, 0, texture2d.width, texture2d.height), new Vector2(0, 0));
@@ -155,14 +169,26 @@ public class LevelChange : MonoBehaviour
             int sumOfPieces = sceneConfigDatas[currLevel - 1].numOfCoins + sceneConfigDatas[currLevel - 1].numOfHidedCoins;//关卡碎片总数
 
             Debug.Log("sceneSaveDatas:        " + (currLevel - 1).ToString());
-            int collectPieces = sceneSaveDatas[currLevel - 1].numOfCollectedCoins + sceneSaveDatas[currLevel - 1].numOfCollectedHidedCoins;//收集的关卡总数
-            pieceText.text = collectPieces.ToString() + "/" + sumOfPieces.ToString();//显示关卡收集物情况
-            achivementText.text = sceneSaveDatas[currLevel - 1].score;//关卡评级
-            timeText.text = sceneSaveDatas[currLevel - 1].usedTime.ToString();//通关所用时间
+            Debug.Log("num of sceneSaveData: " + sceneSaveDatas.Count);
+            if(levelNum - 1 == Game.globalData.passedSceneNums)
+            {
+                int collectPieces = 0;//需要收集的信息碎片总数
+                pieceText.text = collectPieces.ToString() + "/" + sumOfPieces.ToString();//显示关卡收集物情况
+                achivementText.text = "no";
+                timeText.text = "no";//通关所用时间
+            }
+            else
+            {
+                int collectPieces = sceneSaveDatas[currLevel - 1].numOfCollectedCoins + sceneSaveDatas[currLevel - 1].numOfCollectedHidedCoins;//收集的关卡总数
+                pieceText.text = collectPieces.ToString() + "/" + sumOfPieces.ToString();//显示关卡收集物情况
+                achivementText.text = sceneSaveDatas[currLevel - 1].score;//关卡评级
+                timeText.text = sceneSaveDatas[currLevel - 1].usedTime.ToString();//通关所用时间
+            }
 
-            
         }
-        
+
+
+
     }
 
     static public void SetActive(GameObject go, bool state)

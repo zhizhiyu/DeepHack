@@ -91,11 +91,10 @@ public class Game
         globalData = JsonUtility.FromJson<GlobalData>(jsonGlobalData);
     }
 
-    //初始化数据,测试用
+    //初始化数据，重新开始游戏
     public static void NewGame()
     {
         globalData = new GlobalData();
-        GenerateData();
         Save();
     }
 
@@ -127,13 +126,14 @@ public class Game
     //暂停游戏
     public static void PauseGame()
     {
-        
+        isPaused = true;
         Time.timeScale = 0;
     }
 
     //继续游戏
     public static void ContinueGame()
     {
+        isPaused = false;
         Time.timeScale = 1;
     }
 
