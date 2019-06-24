@@ -107,7 +107,7 @@ public class LevelChange : MonoBehaviour
 
     public void SelectLevel(int levelNum)
     {
-        /*先进行判断是否已选中该关卡按钮*/
+        /*先进行判断是否已选中该关卡按钮并且是可进入的关卡*/
         if (currLevel != levelNum && levelNum - 1 <= Game.globalData.passedSceneNums)
         {
             /*先还原上一个关卡按钮*/
@@ -120,6 +120,8 @@ public class LevelChange : MonoBehaviour
                 //把上一个关卡按钮位置还原
                 lastButton.GetComponent<Transform>().position -= new Vector3(xPos, 0f, 0f);
                 lastButton.GetComponent<Transform>().rotation = Quaternion.Euler(0f, 0f, 0f);
+                //颜色还原
+                lastButton.GetComponent<Image>().color = new Color(0, 0, 0, 1);
                 //上一关的关卡细节设为不显示
                 //levelDetail.SetActive(false);
                 SetActive(levelDetail, false);
@@ -142,7 +144,8 @@ public class LevelChange : MonoBehaviour
             levelButton.GetComponent<Transform>().position = Vector3.Lerp(levelButton.GetComponent<Transform>().position, target,0.5f);*/
             levelButton.GetComponent<Transform>().position += new Vector3(xPos, 0f, 0f);
             levelButton.GetComponent<Transform>().rotation = Quaternion.Euler(0, 0, zRota);
-
+            //当前点击按钮颜色改变
+            levelButton.GetComponent<Image>().color = new Color(0.4824f, 0.5412f, 0.8588f, 1f);
 
             //显示关卡模型
             if (currLevel <= levelModel.Length)
