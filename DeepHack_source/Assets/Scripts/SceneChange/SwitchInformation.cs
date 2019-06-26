@@ -8,7 +8,16 @@ public class SwitchInformation : MonoBehaviour
 
     public Text indexText;
     public Text informationText;//记录文档文本
+    public float soundVolume;//音量值
     public AudioSource readNextAudio;//翻页声音
+
+    private void Start()
+    {
+        //读取设置的音量
+        soundVolume = Audio_Manager.soundVolume;
+        //修改所有音频的音量
+        readNextAudio.volume = soundVolume;
+    }
 
     public void LastInformation()
     {
