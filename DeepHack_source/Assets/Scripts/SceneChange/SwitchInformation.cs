@@ -8,16 +8,10 @@ public class SwitchInformation : MonoBehaviour
 
     public Text indexText;
     public Text informationText;//记录文档文本
-    public float soundVolume;//音量值
-    public AudioSource readNextAudio;//翻页声音
+    /*public float soundVolume;//音量值
+    public AudioSource readNextAudio;//翻页声音*/
+    public GameObject audioManager;//音效管理器
 
-    private void Start()
-    {
-        //读取设置的音量
-        soundVolume = Audio_Manager.soundVolume;
-        //修改所有音频的音量
-        readNextAudio.volume = soundVolume;
-    }
 
     public void LastInformation()
     {
@@ -31,7 +25,8 @@ public class SwitchInformation : MonoBehaviour
         if (index >= 0) //已打开的上一条记录索引大于等于0
         {
             //翻页声音播放
-            this.readNextAudio.Play();
+            //this.readNextAudio.Play();
+            audioManager.GetComponent<AudioOfInfamation>().playReadNext();
 
             //显示当前索引
             indexText.text = (index + 1).ToString();
@@ -58,7 +53,7 @@ public class SwitchInformation : MonoBehaviour
         {
 
             //翻页声音播放
-            this.readNextAudio.Play();
+            audioManager.GetComponent<AudioOfInfamation>().playReadNext();
 
             //显示当前索引
             indexText.text = (index + 1).ToString();

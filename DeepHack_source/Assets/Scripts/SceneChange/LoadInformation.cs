@@ -21,12 +21,21 @@ public class LoadInformation : MonoBehaviour
     public Text indexText;
     private Image img;//当前图片组件
 
+    //声音
+    /* public float soundVolume;//音量值
+     public AudioSource buySound;//购买时声音*/
+    public GameObject audioManager;//音效管理器
+
     void OnEnable()
     {
         print("OnEnable");
     }
     void Awake()
     {
+        //读取设置的音量
+        //soundVolume = Audio_Manager.soundVolume;
+        //根据设置音量值改变此页面音量
+
         img = GetComponent<Image>();//获取当前绑定按钮的图片组件
     }
 
@@ -107,6 +116,9 @@ public class LoadInformation : MonoBehaviour
         int costOfPieces = int.Parse(cost.text.ToString());//打开该信息所需的碎片消耗量
         if (!isOpen && costOfPieces <= sumOfPieces)
         {
+            //播放音效
+            audioManager.GetComponent<AudioOfInfamation>().playBuyRecord();
+
             //修改为打开状态
             sumOfPieces -= costOfPieces;
             sumPieces.text = sumOfPieces.ToString();//修改显示的碎片总量
