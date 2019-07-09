@@ -1,8 +1,19 @@
 # DeepHack
 For RainCollapse's practical training
 
+Our Team:
+队长兼程序--虞皓博
+程序--罗金明
+程序--梁志桃
+策划--林静敏
+全栈工程师--史素娟
+美工--魏芸
 
+About Game:
+  这是一款结合网络世界科幻背景，创造出奇幻的游戏世界的3D箱庭解谜游戏。本游戏以冷色调写实科幻风格为游戏画面，以黑客在盗取机密的故事为游戏基调，强调创造出一个背景震撼，深入人心的虚拟世界观，鼓励玩家去收集、解谜、思考来完成揭开世界真实面目，（毁灭惊天阴谋）的目的。
 
-luojinming: first test connecting
-
-shisujuan:first test connecting
+Game Play:
+  传统的键鼠操作，鼠标控制视角，键盘操作人物进行移动。
+  
+Game Characteristic:
+  丰富的解谜内容，深远的故事世界观，完成收集和解锁故事的成就感
