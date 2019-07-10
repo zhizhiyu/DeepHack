@@ -14,11 +14,15 @@ public class UpAndDownNew : MonoBehaviour
     public float moveForce = 1.0f;//移动的力量（速度）
     public bool isUp = false;//是否在上方
 
+    //道路的gameobject，人走向机关后才显示道路
+    public GameObject pathObject;
+
     [SerializeField]
     private float startPoint;//开始位置
     [SerializeField]
     private float endPoint;//终止位置
     private bool isMoving = false;//是否电梯在移动
+
 
     void Start()
     {
@@ -72,10 +76,17 @@ public class UpAndDownNew : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.name == "Player")
+        {
+            //设置道路为active
+            SetPathActive(true);
+        }
         if (other.gameObject.name == "Player" && isMoving == false)//用于判断电梯的移动与否
         {
             isMoving = true;
         }
+
+        
     }
 
     private void OnTriggerStay(Collider other)
@@ -86,5 +97,13 @@ public class UpAndDownNew : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
 
+    }
+
+    private void SetPathActive(bool active)
+    {
+        if(pathObject)
+        {
+            pathObject.SetActive(active);
+        }
     }
 }

@@ -13,7 +13,7 @@ using System.Collections.Generic;
  *Date:         6.11
  *Description:  游戏管理器，具有暂停，开始，保存，读取等功能
  *              
- *History:     (1):6.11,15:12  (2):6.12,11:25
+ *History:     (1):6.11,15:12  (2):6.12,11:25 (3):7.6,14:26
 *****************************************************************/
 
 public class Game
@@ -144,11 +144,47 @@ public class Game
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    //
+    //重新开始关卡
     public static void StartNewScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
         Debug.Log("load new scene: " + sceneName);
     }
+
+
+    //屏幕设置
+    public static void SetFullScreen(bool _fullScreen)
+    {
+        Debug.Log("set screen to " + (_fullScreen ? "full" : "not full"));
+        globalData.settingData.fullScreen = _fullScreen;
+
+        if(_fullScreen)
+        {
+            //获取设置当前屏幕分辩率  
+            Resolution[] resolutions = Screen.resolutions;
+            //设置当前分辨率  
+            Screen.SetResolution(resolutions[resolutions.Length - 1].width, resolutions[resolutions.Length - 1].height, true);
+
+            Screen.fullScreen = true;  //设置成全屏,
+        }
+        else
+        {
+            Screen.SetResolution(1366, 768, true);
+        }
+    }
+
+    //设置BGM
+    public static void SetBGM(float _BGM)
+    {
+        globalData.settingData.BGMVolum = _BGM;
+    }
+
+    //设置音效
+    public static void SetMusicEffect(float _MusicEffect)
+    {
+        globalData.settingData.musicEffectVolum = _MusicEffect;
+    }
+
+
 
 }

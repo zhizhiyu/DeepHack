@@ -4,15 +4,16 @@ using UnityEngine;
 using System.IO;
 
 
+
 /****************************************************************
  *Copyright(C)  2019 by luojinming All rights reserved. 
  *FileName:     GlobalData.cs
  *Author:       luojinming 
- *Version:      1.0 
- *Date:         6.12
+ *Version:      4.0
+ *Date:         7.3
  *Description:  游戏全局数据文件
  *              
- *History:     (1):6.12,16:02, (2):6.17,16.41
+ *History:     (1):6.12,16:02, (2):6.17,16.41, (3):7.3, 15:09, (4):7.4, 10:38
 *****************************************************************/
 
 [System.Serializable]
@@ -27,6 +28,8 @@ public class GlobalData
     //收集数量
     public int coin;
 
+    //生命值
+    public int life;
 
     //完成度
     public float completion;
@@ -35,11 +38,14 @@ public class GlobalData
     //通关后的存档文件列表
     public List<SceneSaveData> sceneSaveDatas;
 
-    //
+    //报告文件
     public List<ReportSaveData> reports;
 
-    //
+    //报告配置文件
     public List<ReportConfigData> reportConfigDatas;
+
+    //全局设置文件
+    public SettingData settingData;
 
 
     //构造函数
@@ -52,6 +58,8 @@ public class GlobalData
 
         passedSceneNums = 0;
         currentSceneId = 0;
+
+        life = 3;
 
         GenerateSceneConfigDataFile();
         sceneSaveDatas = new List<SceneSaveData>();
@@ -77,7 +85,8 @@ public class GlobalData
         for(int i=0; i<sceneNum; i++)
         {
             SceneConfigData newSceneConfigData = new SceneConfigData(i, "name", "imagePath", "no description", 10, 10);
-            streamWriter = new StreamWriter(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt");
+            streamWriter = new StreamWriter(Application.persistentDataPath + "/sceneConfigData/" + i.ToString() + ".txt",
+                false, System.Text.Encoding.UTF8);
             string jsonData = JsonUtility.ToJson(newSceneConfigData);
             streamWriter.Write(jsonData);
             streamWriter.Close();
@@ -188,7 +197,8 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
             ReportConfigData newReportConfigData = new ReportConfigData(i, 0, 10, "no name", "no description");
             string jsonNewReportConfigData = JsonUtility.ToJson(newReportConfigData);
 
-            streamWriter = new StreamWriter(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt");
+            streamWriter = new StreamWriter(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt",
+                false, System.Text.Encoding.UTF8);
             streamWriter.Write(jsonNewReportConfigData);
             streamWriter.Close();
         }
@@ -209,7 +219,8 @@ _numOfHidedCoins, _numOfCollectedHidedCoins, _usedTime, _score);
                 Debug.Log("no report config data exists!");
                 break;
             }
-            streamReader = new StreamReader(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt");
+            streamReader = new StreamReader(Application.persistentDataPath + "/ReportConfigData/" + i.ToString() + ".txt",
+                System.Text.Encoding.UTF8);
 
             string StringNewReportConfigData = streamReader.ReadToEnd();
             streamReader.Close();
@@ -297,6 +308,11 @@ public class SceneConfigData
     //关卡全部隐藏的金币
     public int numOfHidedCoins;
 
+    //关卡全部的对话数据
+    public TalkData talkData;
+
+
+
     public SceneConfigData(int _sceneId, string _sceneName, string _sceneImage ,string _sceneDescription, int _numOfCoins, int _numOfHidedCoins)
     {
         sceneId = _sceneId;
@@ -305,6 +321,8 @@ public class SceneConfigData
         sceneDescription = _sceneDescription;
         numOfCoins = _numOfCoins;
         numOfHidedCoins = _numOfHidedCoins;
+
+        talkData = new TalkData();
     }
 }
 
@@ -406,4 +424,57 @@ public class ReportConfigData
     }
 }
 
+/// <summary>
+/// 设置文件
+/// </summary>
+[System.Serializable]
+public class SettingData
+{
+    //BGM音量大小
+    public float BGMVolum = 0;
+
+    //音效音量大小
+    public float musicEffectVolum = 0;
+
+    //是否为全屏
+    public bool fullScreen = true;
+
+    public SettingData(float _BGMVolum = 0, float _musicEffectVolum = 0, bool _fullScreen = false)
+    {
+        BGMVolum = _BGMVolum;
+        musicEffectVolum = _musicEffectVolum;
+        fullScreen = _fullScreen;
+    }
+
+}
+
+
+/// <summary>
+/// 对话文本
+/// </summary>
+[System.Serializable]
+public class TalkData
+{
+
+    //具体的某一段对话，包括说话者以及说话内容
+    [System.Serializable]
+    public struct Talk
+    {
+        public string personName;
+        public string words;
+    }
+
+    //一个关卡所有的对话
+    public List<Talk> talks;
+
+    public TalkData()
+    {
+        talks = new List<Talk>();
+        Talk temp = new Talk();
+        temp.personName = "person";
+        temp.words = "hello world";
+
+        talks.Add(temp);
+    }
+}
 

@@ -32,7 +32,7 @@ public class PushRotate2 : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
          Push();
     }
@@ -43,6 +43,7 @@ public class PushRotate2 : MonoBehaviour
         {
             isOn = true;
             origionY = controledItem.transform.eulerAngles.x;    //获取当前Y轴旋转值赋给origionY
+            targetRotation = controledItem.transform.rotation;
         }
            
     }
@@ -62,7 +63,7 @@ public class PushRotate2 : MonoBehaviour
     {
         if (other.gameObject.name == "Player")
         {
-
+            count = 0;
             isOn = false;
         }
     }
@@ -76,7 +77,7 @@ public class PushRotate2 : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))  //按下赋值
             {
                 count++;                                     //当按下Q键记录将count+1,一次转60,再按一次就应该从初始的Y变为Y+120,所以每按一次count+1
-                targetRotation = Quaternion.Euler(RotateAngle * count + origionY, 0, 0) * Quaternion.identity;  //给旋转目标值赋值，由于只有Y轴动，所以目标值应是  (旋转角(RotateAngle)*需要旋转的个数(count)+origionY(物体初始Y轴旋转角))*Quarternion.identity(四元数的初始值,记住写就行！)
+                targetRotation = Quaternion.Euler(RotateAngle * count + origionY, 90, 0) * Quaternion.identity;  //给旋转目标值赋值，由于只有Y轴动，所以目标值应是  (旋转角(RotateAngle)*需要旋转的个数(count)+origionY(物体初始Y轴旋转角))*Quarternion.identity(四元数的初始值,记住写就行！)
                 Debug.Log("count为：" + count + "  角度为：" + targetRotation);
             }
 
@@ -84,7 +85,7 @@ public class PushRotate2 : MonoBehaviour
             {
                 controledItem.transform.rotation = Quaternion.Slerp(controledItem.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);//利用Slerp插值让物体进行旋转  2是旋转速度 越大旋转越快
 
-                if (Quaternion.Angle(targetRotation, controledItem.transform.rotation) < 1)
+                if (Quaternion.Angle(targetRotation, controledItem.transform.rotation) < 5)
                 {
                     controledItem.transform.rotation = targetRotation;                        //当物体当前角度与目标角度差值小于1度直接将目标角度赋予物体 让旋转角度精确到我们想要的度数
                 }

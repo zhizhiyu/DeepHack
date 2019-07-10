@@ -10,6 +10,9 @@ public class EndPointController : MonoBehaviour
     //玩家
     public GameObject player;
 
+
+
+
     // Start is called before the first frame update
     void Start()
     {
